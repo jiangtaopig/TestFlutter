@@ -107,6 +107,7 @@ class _FourAppPageState extends State<FourAppPage> {
                 Container(
                   margin: EdgeInsets.only(top: 4),
                   decoration: AppConstants.lineAndBlack,
+
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
