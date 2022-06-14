@@ -71,7 +71,7 @@ class _FourAppPageState extends State<FourAppPage> {
   @override
   Widget build(BuildContext context) {
 
-    print('-----------------');
+    print('-----------------=======----------------');
     methodChannel.setMethodCallHandler((handler) => Future<String>(() {
       print("Native端要调用的方法和参数是：${handler}");
       // 监听native发送的方法名及参数
@@ -107,7 +107,6 @@ class _FourAppPageState extends State<FourAppPage> {
                 Container(
                   margin: EdgeInsets.only(top: 4),
                   decoration: AppConstants.lineAndBlack,
-
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
