@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+void main() {
+  runApp(FirstApp());
+}
 
 class FirstApp extends StatelessWidget {
   const FirstApp({Key? key}) : super(key: key);
@@ -10,7 +15,7 @@ class FirstApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const FirstAppPage(
+      home: FirstAppPage(
         title: 'First Page',
         content: '1234_zhu',
       ),
@@ -19,19 +24,34 @@ class FirstApp extends StatelessWidget {
 }
 
 class FirstAppPage extends StatefulWidget {
-  const FirstAppPage({Key? key, required this.title, required this.content})
+  FirstAppPage({Key? key, required this.title, required this.content, })
       : super(key: key);
 
   final String title;
   final String content;
 
+  final VoidCallback voidCallback = (){
+    Fluttertoast.showToast(msg: '哈哈哈',
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.black,
+        fontSize: 16);
+  };
+
+
   @override
-  State<StatefulWidget> createState() => _MyFirstPageState();
+  State<StatefulWidget> createState() => _MyFirstPageState(voidCallback: voidCallback);
 }
 
 class _MyFirstPageState extends State<FirstAppPage> {
+
+   _MyFirstPageState({required this.voidCallback});
+
   int _counter = 0;
   String _title = "试试";
+
+  final VoidCallback voidCallback;
 
   void _incrementCounter() {
     setState(() {
@@ -63,9 +83,7 @@ class _MyFirstPageState extends State<FirstAppPage> {
                   _title,
                   style: TextStyle(color: Colors.blue, fontSize: 23),
                 ),
-                onTap: () {
-                  _changeTitle();
-                },
+                onTap: voidCallback,
               ),
             ),
             const Text(

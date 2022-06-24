@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_demo/Lesson.dart';
-import 'package:flutter_demo/LessonBean.dart';
+import 'package:flutter_demo/model/Lesson.dart';
+import 'package:flutter_demo/model/LessonBean.dart';
 import 'package:flutter_demo/TestAwait.dart';
 import 'package:flutter_demo/model/TestStatic.dart';
 import 'package:http/http.dart' as http;
 
-import 'LoadJson.dart';
+import 'model/LoadJson.dart';
 
 void main() {
   runApp(SampleApp());

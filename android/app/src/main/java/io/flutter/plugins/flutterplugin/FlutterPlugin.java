@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.flutter_demo.SecondActivity;
 
@@ -21,6 +22,7 @@ public class FlutterPlugin implements MethodChannel.MethodCallHandler {
 
     private Activity activity;
 
+
     private FlutterPlugin(Activity activity) {
         this.activity = activity;
     }
@@ -33,7 +35,16 @@ public class FlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     /**
-     * native 调用 flutter 的方法
+     * native 调用 flutter 的方法，有返回值
+     */
+    public static void invokeFlutter(MethodChannel.Result result) {
+        // Native告诉Flutter要调用的方法是send（）
+        Log.e("xxxxx", "invokeFlutter");
+        channel.invokeMethod("AndroidInvokeFlutter","我是native传递过来的参数", result);
+    }
+
+    /**
+     * native 调用 flutter 的方法，无返回值
      */
     public static void invokeFlutter() {
         // Native告诉Flutter要调用的方法是send（）

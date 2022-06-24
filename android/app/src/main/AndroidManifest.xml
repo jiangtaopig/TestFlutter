@@ -12,6 +12,10 @@
 
         <activity
             android:name=".OneActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +24,9 @@
             </intent-filter>
         </activity>
 
+        <!--测试的 native 和 flutter 调用的时候可以交换 OneActivity 和 MainActivity 的位置，这样打开应用就直接显示的是 native 的 OneActivity，
+        但是，可能会导致 hot reload 失效
+         -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

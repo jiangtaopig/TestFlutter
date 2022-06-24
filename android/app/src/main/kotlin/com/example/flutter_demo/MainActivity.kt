@@ -13,6 +13,6 @@ class MainActivity: FlutterActivity() {
         Log.e("xxxx", "MainActivity")
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         FlutterPlugin.registerWith(flutterEngine, this)
-        FlutterPlugin.invokeFlutter();
+//        FlutterPlugin.invokeFlutter();
     }
 }
