@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(FirstApp());
@@ -31,12 +31,12 @@ class FirstAppPage extends StatefulWidget {
   final String content;
 
   final VoidCallback voidCallback = (){
-    Fluttertoast.showToast(msg: '哈哈哈',
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.black,
-        fontSize: 16);
+    // Fluttertoast.showToast(msg: '哈哈哈',
+    //     gravity: ToastGravity.CENTER,
+    //     timeInSecForIosWeb: 3,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.black,
+    //     fontSize: 16);
   };
 
 
