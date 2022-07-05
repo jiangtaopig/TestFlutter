@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_demo/AppConstants.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(FourApp());
@@ -80,13 +80,13 @@ class _FourAppPageState extends State<FourAppPage> {
 
   void _send(String method, String args) {
     print('>>>>>>>>>>>>> === ' + method + ', ' + args);
-    Fluttertoast.showToast(
-        msg: method + args,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.black,
-        fontSize: 16);
+    // Fluttertoast.showToast(
+    //     msg: method + args,
+    //     gravity: ToastGravity.CENTER,
+    //     timeInSecForIosWeb: 3,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.black,
+    //     fontSize: 16);
   }
 
   final TextEditingController _controller = new TextEditingController();
@@ -228,13 +228,13 @@ class _FourAppPageState extends State<FourAppPage> {
                       maxLines: 1,
                     ),
                     onTap: () {
-                      Fluttertoast.showToast(
-                          msg: 'click me',
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 3,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.black,
-                          fontSize: 16);
+                      // Fluttertoast.showToast(
+                      //     msg: 'click me',
+                      //     gravity: ToastGravity.CENTER,
+                      //     timeInSecForIosWeb: 3,
+                      //     backgroundColor: Colors.red,
+                      //     textColor: Colors.black,
+                      //     fontSize: 16);
 
                       print('--------------------------------');
                       _jump2NativeSecondActivity();
