@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_demo/AppConstants.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(FourApp());
@@ -44,6 +44,7 @@ class _FourAppPageState extends State<FourAppPage> {
   }
 
   void _sendDataToNative() async {
+    print('flutter 开始向 Native 传递数据');
     Map<String, String> map = {"flutter": "我是flutter 传递过来的"};
     String result = await methodChannel.invokeMethod('mapData', map);
     print(result);
@@ -79,13 +80,13 @@ class _FourAppPageState extends State<FourAppPage> {
 
   void _send(String method, String args) {
     print('>>>>>>>>>>>>> === ' + method + ', ' + args);
-    // Fluttertoast.showToast(
-    //     msg: method + args,
-    //     gravity: ToastGravity.CENTER,
-    //     timeInSecForIosWeb: 3,
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.black,
-    //     fontSize: 16);
+    Fluttertoast.showToast(
+        msg: method + args,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.black,
+        fontSize: 16);
   }
 
   final TextEditingController _controller = new TextEditingController();
@@ -227,13 +228,13 @@ class _FourAppPageState extends State<FourAppPage> {
                       maxLines: 1,
                     ),
                     onTap: () {
-                      // Fluttertoast.showToast(
-                      //     msg: 'click me',
-                      //     gravity: ToastGravity.CENTER,
-                      //     timeInSecForIosWeb: 3,
-                      //     backgroundColor: Colors.red,
-                      //     textColor: Colors.black,
-                      //     fontSize: 16);
+                      Fluttertoast.showToast(
+                          msg: 'click me',
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 3,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.black,
+                          fontSize: 16);
 
                       print('--------------------------------');
                       _jump2NativeSecondActivity();
