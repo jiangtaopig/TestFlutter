@@ -13,7 +13,8 @@ import 'package:flutter_demo/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // 已经在 main.dart 中删除了 MyApp 的类，所以注释。尽管不影响项目的编译和运行，但是会标红
+    // await tester.pumpWidget(const MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
