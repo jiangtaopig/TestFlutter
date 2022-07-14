@@ -11,6 +11,7 @@ class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         Log.e("xxxx", "MainActivity")
+//        Toast.makeText(this, "mainactivity ", Toast.LENGTH_LONG).show()
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         FlutterPlugin.registerWith(flutterEngine, this)
 //        FlutterPlugin.invokeFlutter();

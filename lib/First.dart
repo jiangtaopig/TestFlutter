@@ -24,13 +24,16 @@ class FirstApp extends StatelessWidget {
 }
 
 class FirstAppPage extends StatefulWidget {
-  FirstAppPage({Key? key, required this.title, required this.content, })
-      : super(key: key);
+  FirstAppPage({
+    Key? key,
+    required this.title,
+    required this.content,
+  }) : super(key: key);
 
   final String title;
   final String content;
 
-  final VoidCallback voidCallback = (){
+  final VoidCallback voidCallback = () {
     // Fluttertoast.showToast(msg: '哈哈哈',
     //     gravity: ToastGravity.CENTER,
     //     timeInSecForIosWeb: 3,
@@ -39,14 +42,13 @@ class FirstAppPage extends StatefulWidget {
     //     fontSize: 16);
   };
 
-
   @override
-  State<StatefulWidget> createState() => _MyFirstPageState(voidCallback: voidCallback);
+  State<StatefulWidget> createState() =>
+      _MyFirstPageState(voidCallback: voidCallback);
 }
 
 class _MyFirstPageState extends State<FirstAppPage> {
-
-   _MyFirstPageState({required this.voidCallback});
+  _MyFirstPageState({required this.voidCallback});
 
   int _counter = 0;
   String _title = "试试";
@@ -86,6 +88,7 @@ class _MyFirstPageState extends State<FirstAppPage> {
                 onTap: voidCallback,
               ),
             ),
+
             const Text(
               'You have pushed the button this many ---22 times:-',
             ),
@@ -104,6 +107,10 @@ class _MyFirstPageState extends State<FirstAppPage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+
+            /// 动态修改 widget
+            _counter > 2 ? Text('count > 2') : Text('count <= 2'),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[

@@ -23,12 +23,22 @@ class FourAppPage extends StatefulWidget {
   }
 }
 
-/// 箭头表达式：函数体内只有一个表达式，那么就可以使用箭头函数来简化代码
-Function test = (a) => a*a;
+/// 箭头表达式：如果函数体内只有一个表达式，那么就可以使用箭头函数来简化代码
+Function test = (a) => a * a;
 
 /// 高阶函数
-int add (int a, Function opt) {
+int add(int a, Function opt) {
   return opt(a);
+}
+
+int add2(int a, int b, Function opt) {
+  return opt(a, b);
+}
+
+int f1() {
+  return add2(2, 3, (a, b) {
+    return a + b;
+  });
 }
 
 class _FourAppPageState extends State<FourAppPage> {
@@ -64,7 +74,7 @@ class _FourAppPageState extends State<FourAppPage> {
 
     setState(() => nativeReturnString = backString); // 或者写成如下的形式
 
-    setState( (){
+    setState(() {
       // nativeReturnString = backString;
     });
   }
@@ -289,7 +299,9 @@ class _FourAppPageState extends State<FourAppPage> {
                           ..write('ccc');
                         //第二个参数表示分隔符，将第一个参数列表里的数据用这个分隔符拼接起来
                         sb.writeAll(['ddd', 'eee', 'fff'], ',');
-                        print('sb : $sb'); /// 输出结果： aaabbbcccddd,eee,fff
+                        print('sb : $sb');
+
+                        /// 输出结果： aaabbbcccddd,eee,fff
                         testFuture();
                         var addFunc = makeAddFunc(2);
                         print(addFunc.runtimeType);
@@ -297,6 +309,48 @@ class _FourAppPageState extends State<FourAppPage> {
                         print('val = $val');
                       },
                       child: Text('测试 Dart 语法的级联操作符')),
+                  ElevatedButton(
+                      onPressed: () {
+                        /// 把函数赋值给函数类型的变量
+                        Function f = _userName;
+                        f("123");
+                        testFunctionInvoke(_userName,
+                            "zhu"); // 或者 testFunctionInvoke(f, "zhu")
+
+                        testFunctionInvoke((a) {
+                          print('-------- testFunctionInvoke ------- a = $a');
+                        }, "xxxx");
+                        print(_userName("---"));
+
+                        int vv = f1();
+                        print("vv >> $vv");
+                        int mul = add2(3, 4, (a, b) => a * b);
+                        print("mul = $mul");
+                        int div = add2(8, 2, (a, b) {
+                          double v = a / b;
+                          return v.toInt();
+                        });
+                        print("div = $div");
+
+                        /// ... 用来拼接 集合 、map
+                        List<String> l1 = ["1", "2"];
+                        List<String> l2 = [...l1, "3"];
+                        List<String> l3 = ["44", ...l2];
+                      },
+                      child: Text('函数Function使用')),
+                  InkWell(
+                    splashColor: Colors.red,
+
+                    highlightColor: Colors.greenAccent,
+                    onTap: () {
+                      print('-----------水波纹效果点击----------');
+                    },
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(10),
+                      child: Text('水波纹效果'),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -318,8 +372,19 @@ class _FourAppPageState extends State<FourAppPage> {
   }
 }
 
+/// 函数没有显示定义返回值类型，那么默认返回 null， print(_userName('ddd')) ==> 输出 null
+_userName(String name) {
+  print("userName >>> name = $name");
+}
+
+/// 函数作为另一个函数的参数
+testFunctionInvoke(Function opt, String name) {
+  opt(name);
+}
+
 void testFuture() {
   print("----- start -------");
+
   /// 由于 dart 是单线程的，所以采用的是非阻塞的调用，即 getResponse 方法不会阻塞 main线程
   /// 是根据事件循环来获取网络请求或者 IO 操作的执行结果。所以下面的代码会先输出 ---- end ---
   /// 等 getResponse 执行完才会输出 value = xxx

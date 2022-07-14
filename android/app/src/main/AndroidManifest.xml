@@ -11,7 +11,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".OneActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
@@ -28,7 +28,7 @@
         但是，可能会导致 hot reload 失效
          -->
         <activity
-            android:name=".MainActivity"
+            android:name=".OneActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
