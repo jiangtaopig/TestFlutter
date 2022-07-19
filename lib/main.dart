@@ -1,9 +1,62 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import 'First.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_demo/crash_handler.dart';
+import 'package:flutter_demo/model/crash_model.dart';
+import 'package:flutter_demo/testException.dart';
+
 
 void main() {
-  runApp(const FirstApp());
+  //在规定运行zone里捕捉未处理的error
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    FlutterError.dumpErrorToConsole(details);
+    Zone.current.handleUncaughtError(details.exception, details.stack!);
+    // _reportError(details.exception, details.stack);
+  };
+
+  print("--------------- main -----------------------");
+
+  runZonedGuarded(() {
+    runApp(const TestException());
+  }, (Object error, StackTrace stack) {
+    // print("runZonedGuarded zjt crash start : error = $error, stack = $stack");
+    _reportError(error, stack);
+  });
+
+
+  // CrashHandler crashHandler = CrashHandler();
+  // crashHandler.startTimer();
+
+
 }
 
+/// 一定要放这里才发送，在别的类里不行
+Future<void> _reportError(dynamic error, dynamic stackTrace) async {
+  print("zjt crash start : error = $error");
+  print("zjt crash end >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  Map<String, dynamic> params = {};
+  params["taskId"] = "005";
+  params["errMsg"] = error.toString();
 
+
+
+ CrashBean crashBean =  CrashBean(errMsg: "$error,  >>>> $stackTrace");
+ // String string = jsonEncode(crashBean);
+ // if (string.contains("\\n")) {
+ //   print("--------------xxx-----------------");
+ //   string = string.replaceAll("\\n", "\n");
+ // }
+ //
+ // // print(" string  = $string");
+ //
+ //  if (string.contains("\n")) {
+ //    print("--------------xxx-----------------");
+ //    string = string.replaceAll("\n", "\\n");
+ //  }
+ //
+ // CrashBean bean = CrashBean.fromJson(jsonDecode(string));
+ //
+ // print("code = ${bean.taskId}, msg = ${bean.errMsg}");
+
+  await CrashHandler().addCrashData(crashBean);
+}

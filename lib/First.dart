@@ -40,6 +40,9 @@ class FirstAppPage extends StatefulWidget {
     //     backgroundColor: Colors.red,
     //     textColor: Colors.black,
     //     fontSize: 16);
+    print("-------------------");
+    String? a = null;
+    print(" a length = ${a!.length}");
   };
 
   @override
