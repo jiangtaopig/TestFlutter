@@ -2,60 +2,77 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'model/crash_model.dart';
 
 class CrashHandler {
   final String TAG = "CrashHandler";
-  final int MAX_SIZE = 2;
-  Timer? timer;
+  final int MAX_SIZE = 3;
+  static const int LOOP_TIME_SECOND = 5 * 60;
+  static const int COUNT_TYPE = 1;
+  static const int LOOP_TYPE = COUNT_TYPE + 1;
+  static const int BOOSTER_TYPE = LOOP_TYPE + 1;
 
+  Timer? timer;
   List<CrashBean> _crashBeanList = [];
+  static CrashHandler? _instance;
 
   CrashHandler._internal();
 
-  static final CrashHandler _singleton = CrashHandler._internal();
-
-  factory CrashHandler() {
-    return _singleton;
+  static CrashHandler getInstance() {
+    if (_instance == null) {
+      _instance = CrashHandler._internal();
+    }
+    return _instance!;
   }
 
   void startTimer() async {
     print("CrashHandler:  startTimer  start ");
     int time = 0;
-    timer = Timer.periodic(Duration(seconds: 5), (t) async {
+    timer = Timer.periodic(Duration(seconds: LOOP_TIME_SECOND), (t) async {
       time++;
       print(time);
       if (!_crashBeanList.isEmpty) {
         print("startTimer _crashBeanList size = ${_crashBeanList.length}");
+        List<CrashBean> tmpList = List.from(_crashBeanList);
+        _crashBeanList.clear();
+        reporterToService(LOOP_TYPE);
       }
     });
     print("CrashHandler: startTimer  end >>> ${timer.hashCode}");
   }
 
+  /// 取消之前轮询的任务，同时开启新一轮的轮询
   void stopTimer() {
     print("CrashHandler: stopTimer >>> ${timer.hashCode}");
     timer?.cancel();
-
-    /// 取消之前轮询的任务，同时开启新一轮的轮询
     startTimer();
   }
 
   Future addCrashData(CrashBean crashBean) async {
-    print("$TAG : addList before add size = ${_crashBeanList.length}");
-    await write2Local(jsonEncode(crashBean));
-    _crashBeanList.add(crashBean);
-    print("$TAG : addList after add size = ${_crashBeanList.length}");
-    if (_crashBeanList.length >= MAX_SIZE) {
-      List<CrashBean> tmpList = List.from(_crashBeanList);
-      _crashBeanList.clear();
-      print(
-          "_crashBeanList size = ${_crashBeanList.length},  tmpList size = ${tmpList.length}");
-      for (CrashBean bean in tmpList) {
+    try {
+      print("$TAG : addList before add size = ${_crashBeanList.length}");
+      await write2Local(jsonEncode(crashBean));
+      _crashBeanList.add(crashBean);
+      print("$TAG : addList after add size = ${_crashBeanList.length}");
+      if (_crashBeanList.length >= MAX_SIZE) {
+        List<CrashBean> tmpList = List.from(_crashBeanList);
+        _crashBeanList.clear();
+        print(
+            "_crashBeanList size = ${_crashBeanList.length},  tmpList size = ${tmpList.length}");
+
         /// 接口上报
-        /// tmpList.clear();
+        reporterToService(COUNT_TYPE);
+        for (CrashBean bean in tmpList) {
+          /// tmpList.clear();
+        }
       }
+    } catch (e, s) {
+      print(
+          "$TAG: addCrashData error,  stack is >>  ${e.toString()} ,  ${s.toString()}");
     }
   }
 
@@ -79,18 +96,19 @@ class CrashHandler {
 
   /// 接口上报之后得删除本地的文件，以免 app 再次启动时会多报
   void _deleteFile() async {
+    print("$TAG :delete file start");
     final file = await _localFile;
     file.exists().then((value) {
       if (value) {
         file.delete();
       }
+      print(
+          "$TAG :delete file .....................................................");
     });
-    print("$TAG :delete file ......");
   }
 
   Future write2Local(String content) async {
     if (content.contains("\\n")) {
-      print("--------------xxx-----------------");
       content = content.replaceAll("\\n", "\n") + "&&";
     }
     print("write2Local start , time >>> ${DateTime.now()}");
@@ -129,15 +147,17 @@ class CrashHandler {
 
   /// app 启动的时候，如果发现 crash.txt 文件不为空，则上报，然后删除 crash.txt
   void boostReporter() async {
-    String content = await readFile();
-    deleteFile();
+    try {
+      String content = await readFile();
+      List<CrashBean> crashList = parseList(content);
+      int size = crashList.length;
+      print("$TAG: boostReporter crashList size = $size");
 
-    /// 删除 crash.txt
-    List<CrashBean> crashList = parseList(content);
-    int size = crashList.length;
-    print("$TAG: boostReporter crashList size = $size");
-
-    /// TODO 接口上报
+      /// TODO 接口上报
+      reporterToService(BOOSTER_TYPE);
+    } catch(e, s) {
+     print("$TAG: boostReporter error; $e,  ${s.toString()}");
+    }
   }
 
   List<CrashBean> parseList(String content) {
@@ -157,11 +177,28 @@ class CrashHandler {
     return beanList;
   }
 
-  void test() {
-    print("------ start ------, time >>> ${DateTime.now()}");
-    for (int i = 0; i < 100000000; i++) {
-      int a = i * 2 * 3;
+  Future reporterToService(int type) async {
+    String msg = "";
+    switch (type) {
+      case COUNT_TYPE:
+        msg = "超过$MAX_SIZE次，所以上报";
+        break;
+      case LOOP_TYPE:
+        msg = "超过轮询时间，所以上报";
+        break;
+      case BOOSTER_TYPE:
+        msg = "首次启动上报";
+        break;
     }
-    print("--------end-------, time >>> ${DateTime.now()}");
+    Fluttertoast.showToast(
+        msg: msg,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.black,
+        fontSize: 16);
+
+    /// 删除本地 crash.txt
+    _deleteFile();
   }
 }

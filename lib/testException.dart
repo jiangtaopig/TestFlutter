@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/crash_handler.dart';
+import 'package:flutter_demo/model/LessonBean.dart';
+import 'package:flutter_demo/model/Person.dart';
 
 import 'model/crash_model.dart';
 
@@ -19,12 +22,13 @@ class _TestExceptionState extends State<TestException> {
   @override
   void initState() {
     super.initState();
-    CrashHandler().boostReporter();
-    CrashHandler().startTimer();
+    // CrashHandler().boostReporter();
+    // CrashHandler().startTimer();
   }
 
   int count = 0;
   Timer? timer = null;
+  List<String> _list = ["first"];
 
   void _startTimer() async {
     print("_testTimer  start time >> ${DateTime.now()}");
@@ -78,6 +82,97 @@ class _TestExceptionState extends State<TestException> {
     print("testAsync end $ss");
   }
 
+  List ttt(List list, String times(String v)) {
+    for (int i = 0; i < list.length; i++) {
+      list[i] = times(list[i]);
+    }
+    return list;
+  }
+
+  int ttt2(int x, int y, {int add(int a, int b)?}) {
+    return add!(x, y);
+  }
+
+  void ee() {
+    List<String> ll = ["a", "b", "c"];
+    print(ttt(ll, (v) {
+      return v * 3;
+    }));
+
+    print(ttt2(3, 4, add: (x, y) {
+      return x + y;
+    }));
+  }
+
+  void testJson() {
+    CrashBean crashBean = CrashBean(errMsg: "ClassNotFoundException");
+    String jsonStr = jsonEncode(crashBean);
+    print("jsonStr = $jsonStr");
+
+    var data = jsonDecode(jsonStr);
+    print("data = $data, ${data.runtimeType}");
+    CrashBean bean = CrashBean.fromJson(data);
+    print("bean msg = ${bean.errMsg}");
+
+    List<LessonDetail> detailList = [];
+    LessonDetail lessonDetail1 = LessonDetail(
+        id: 1,
+        name: "name1",
+        picSmall: "picSmall",
+        picBig: "picBig",
+        description: "description");
+    detailList.add(lessonDetail1);
+    LessonBean lessonBean =
+        LessonBean(status: 200, msg: "ok", data: detailList);
+
+    String json = jsonEncode(lessonBean);
+    print("json = $json");
+
+    LessonBean lessonBean2 = LessonBean.fromJson(jsonDecode(json));
+    print("name = ${lessonBean2.data[0].name}");
+
+    Grade grade = Grade(className: "一年级", title: "班长");
+    Address address1 = Address(street: "长宁路666号", district: "长宁区");
+    Address address2 = Address(street: "淞虹路", district: "长宁区");
+
+    List<Address> addressList = [address1, address2];
+
+    Student student =
+        Student(name: "pig", age: 7, grade: grade, addressList: addressList);
+
+    String jsonStu = jsonEncode(student);
+    print("jsonStu = $jsonStu");
+
+    var s1 = jsonDecode(jsonStu);
+    print("$s1, runType = ${s1.runtimeType}");
+    Student student2 = Student.fromJson(s1);
+    print(
+        "class is ${student2.grade.className}, address1 = ${student2.addressList[0].district}");
+
+    /// 使用注解类生成的，适合大型项目
+
+    Address2 add = Address2("上海市长兴区333弄");
+    Person person = Person("zzz", 33, add);
+    String personStr = jsonEncode(person);
+    print("personStr = $personStr");
+
+    Person person2 = Person.fromJson(jsonDecode(personStr));
+    print("address = ${person2.address.detailAddress}");
+  }
+
+  Future add() async {
+    print("----add-----");
+    _list.add("3");
+    print("----add end-----");
+  }
+
+  Future clear() async {
+    print("----delete-----${_list[0]}");
+    _list.clear();
+    sleep(Duration(seconds: 2));
+    print("----delete end-----");
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -102,7 +197,7 @@ class _TestExceptionState extends State<TestException> {
                         content = "\n 哈哈哈";
                       }
 
-                      await CrashHandler().write2Local(content);
+                      await CrashHandler.getInstance().write2Local(content);
                       print(
                           "--------------- write ---------------- time >>> ${DateTime.now()}");
                     },
@@ -110,13 +205,13 @@ class _TestExceptionState extends State<TestException> {
                 ElevatedButton(
                     onPressed: () {
                       // _readFile();
-                      CrashHandler().readFile();
+                      CrashHandler.getInstance().boostReporter();
                     },
                     child: Text('read from file')),
                 ElevatedButton(
                     onPressed: () {
                       // _deleteFile();
-                      CrashHandler().deleteFile();
+                      CrashHandler.getInstance().deleteFile();
                     },
                     child: Text('delete  file')),
                 ElevatedButton(
@@ -126,27 +221,47 @@ class _TestExceptionState extends State<TestException> {
                     child: Text('开始轮询')),
                 ElevatedButton(
                     onPressed: () {
-                      CrashHandler().stopTimer();
+                      CrashHandler.getInstance().stopTimer();
                     },
                     child: Text('停止轮询')),
                 ElevatedButton(
                     onPressed: () {
                       // _testQueue();
+
+                      // var numberPrinter = () {
+                      //   int num = 0;
+                      //   print("num = $num");
+                      //   return () {
+                      //     for (int i = 0; i < 10; i++) {
+                      //       num++;
+                      //     }
+                      //     print(num);
+                      //   };
+                      // };
+                      //
+                      // var printer = numberPrinter();
+                      // ee();
+                      //
+                      // testJson();
+
+                      add();
                     },
                     child: Text('测试集合')),
                 ElevatedButton(
                     onPressed: () {
                       count++;
-                      if (count % 2 == 0) {
-                        String? txt = null;
-                        int len = txt!.length;
-                      } else {
-                        List list = [1];
-                        int b = list[2];
-                      }
+                      // if (count % 2 == 0) {
+                      //   String? txt = null;
+                      //   int len = txt!.length;
+                      // } else {
+                      //   List list = [1];
+                      //   int b = list[2];
+                      // }
                       // print("-----");
                       // testAsync();
                       // print("xxxxxxxx");
+
+                      clear();
                     },
                     child: Text('测试crash')),
               ],
@@ -155,5 +270,92 @@ class _TestExceptionState extends State<TestException> {
         ),
       ),
     );
+  }
+}
+
+/// json convert 嵌套类的解析
+class Student {
+  String name;
+  int age;
+  Grade grade;
+  List<Address> addressList;
+
+  Student(
+      {required this.name,
+      required this.age,
+      required this.grade,
+      required this.addressList});
+
+  factory Student.fromJson(Map<String, dynamic> parsedJson) {
+    /// addressList 是列表 和 grade 的处理方式不一样
+    /// 方式 1
+    List<Address> addressL = [];
+    var list = parsedJson['addressList'];
+    for (var address in list) {
+      addressL.add(Address.fromJson(address));
+    }
+
+    /// 方式 2，显然方式2的更加优雅
+    List<Address> addressL2 = (parsedJson['addressList'] as List<dynamic>)
+        .map((e) => Address.fromJson(e))
+        .toList();
+
+    return Student(
+      name: parsedJson['name'],
+      age: parsedJson['age'],
+      grade: Grade.fromJson(parsedJson['grade']),
+      addressList: addressL2,
+    );
+  }
+
+  Map toJson() {
+    Map map = Map();
+    map["name"] = this.name;
+    map["age"] = this.age;
+    map["grade"] = this.grade;
+    map['addressList'] = this.addressList;
+    return map;
+  }
+}
+
+class Grade {
+  String className;
+  String title;
+
+  Grade({required this.className, required this.title});
+
+  factory Grade.fromJson(Map<String, dynamic> parsedJson) {
+    return Grade(
+      className: parsedJson['className'],
+      title: parsedJson['title'],
+    );
+  }
+
+  Map toJson() {
+    Map map = Map();
+    map["className"] = this.className;
+    map["title"] = this.title;
+    return map;
+  }
+}
+
+class Address {
+  String street;
+  String district;
+
+  Address({required this.street, required this.district});
+
+  factory Address.fromJson(Map<String, dynamic> parsedJson) {
+    return Address(
+      street: parsedJson['street'],
+      district: parsedJson['district'],
+    );
+  }
+
+  Map toJson() {
+    Map map = Map();
+    map["street"] = this.street;
+    map["district"] = this.district;
+    return map;
   }
 }

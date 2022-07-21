@@ -7,6 +7,9 @@ import 'package:flutter_demo/testException.dart';
 
 
 void main() {
+
+  // WidgetsFlutterBinding.ensureInitialized();
+
   //在规定运行zone里捕捉未处理的error
   FlutterError.onError = (FlutterErrorDetails details) async {
     FlutterError.dumpErrorToConsole(details);
@@ -16,6 +19,8 @@ void main() {
 
   print("--------------- main -----------------------");
 
+  initBeforeRun();
+
   runZonedGuarded(() {
     runApp(const TestException());
   }, (Object error, StackTrace stack) {
@@ -23,11 +28,11 @@ void main() {
     _reportError(error, stack);
   });
 
+}
 
-  // CrashHandler crashHandler = CrashHandler();
-  // crashHandler.startTimer();
-
-
+void initBeforeRun() {
+  CrashHandler.getInstance().boostReporter();
+  CrashHandler.getInstance().startTimer();
 }
 
 /// 一定要放这里才发送，在别的类里不行
@@ -37,8 +42,6 @@ Future<void> _reportError(dynamic error, dynamic stackTrace) async {
   Map<String, dynamic> params = {};
   params["taskId"] = "005";
   params["errMsg"] = error.toString();
-
-
 
  CrashBean crashBean =  CrashBean(errMsg: "$error,  >>>> $stackTrace");
  // String string = jsonEncode(crashBean);
@@ -58,5 +61,5 @@ Future<void> _reportError(dynamic error, dynamic stackTrace) async {
  //
  // print("code = ${bean.taskId}, msg = ${bean.errMsg}");
 
-  await CrashHandler().addCrashData(crashBean);
+  await CrashHandler.getInstance().addCrashData(crashBean);
 }
