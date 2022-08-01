@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo/crash_handler.dart';
 import 'package:flutter_demo/model/LessonBean.dart';
 import 'package:flutter_demo/model/Person.dart';
+import 'package:flutter_demo/test_json.dart';
 
 import 'model/crash_model.dart';
 
@@ -19,6 +20,9 @@ class TestException extends StatefulWidget {
 }
 
 class _TestExceptionState extends State<TestException> {
+
+  // String title;
+
   @override
   void initState() {
     super.initState();
@@ -76,10 +80,49 @@ class _TestExceptionState extends State<TestException> {
 
   Future testAsync() async {
     print("testAsync start");
-    String ss = await Future.delayed(Duration(seconds: 4), () {
-      return "延时4秒";
+    // Future.delayed(Duration(seconds: 4), () {
+    //   return "延时4秒";
+    // });
+
+    await Future(() {
+      print("sleep....");
+      sleep(Duration(seconds: 3));
+      print("sleep....end");
     });
-    print("testAsync end $ss");
+
+    print("testAsync end ");
+  }
+
+  /// 正常情况下，一个 Future 异步任务的执行是相对简单的：
+  /// 声明一个 Future 时，Dart会将异步任务的函数执行体放入event queue，然后立即返回，后续的代码继续同步执行；
+  /// 当同步执行的代码执行完毕后，event queue会按照加入event queue的顺序（即声明顺序），依次取出事件，最后同步执行 Future 的函数体及后续的操作。
+  /// 所以下面的代码的执行顺序是 "testAsync2 start" -> "testAsync2 end" -> "testAsync2 xxxxxxxxxxxxxxxxxxxx"
+  Future testAsync2() async {
+    print("testAsync2 start");
+    Future(() => print("testAsync2 xxxxxxxxxxxxxxxxxxxx"));
+    print("testAsync2 end");
+  }
+
+  Future testAsync3() async {
+    print("testAsync3 start");
+    String res = await Future.delayed(Duration(seconds: 2), () {
+      return "3秒结束了";
+    });
+    print("testAsync3 end $res");
+  }
+
+  void futureQueueTest() {
+    Future future1 = Future(() => null);
+    future1.then((value) {
+      print('6');
+      scheduleMicrotask(() => print(7));
+    }).then((value) => print('8'));
+    Future future2 = Future(() => print('1'));
+    Future(() => print('2'));
+    scheduleMicrotask(() => print('3'));
+    future2.then((value) => print('4'));
+
+    print('5');
   }
 
   List ttt(List list, String times(String v)) {
@@ -173,189 +216,140 @@ class _TestExceptionState extends State<TestException> {
     print("----delete end-----");
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("日志上报"),
-        ),
-        body: Center(
-          child: Container(
-            color: Colors.greenAccent,
-            width: double.infinity,
-            child: Column(
-              children: [
-                ElevatedButton(
-                    onPressed: () async {
-                      print(
-                          "...........................................................");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("日志上报"),
+      ),
+      body: Center(
+        child: Container(
+          color: Colors.greenAccent,
+          width: double.infinity,
+          child: Column(
+            children: [
+              ElevatedButton(
+                  onPressed: () async {
+                    print(
+                        "...........................................................");
 
-                      count++;
-                      String content = "\n i am zjt \n i love little pig";
-                      if (count % 2 == 0) {
-                        content = "\n 哈哈哈";
-                      }
+                    count++;
+                    String content = "\n i am zjt \n i love little pig";
+                    if (count % 2 == 0) {
+                      content = "\n 哈哈哈";
+                    }
 
-                      await CrashHandler.getInstance().write2Local(content);
-                      print(
-                          "--------------- write ---------------- time >>> ${DateTime.now()}");
-                    },
-                    child: Text('write to file')),
-                ElevatedButton(
-                    onPressed: () {
-                      // _readFile();
-                      CrashHandler.getInstance().boostReporter();
-                    },
-                    child: Text('read from file')),
-                ElevatedButton(
-                    onPressed: () {
-                      // _deleteFile();
-                      CrashHandler.getInstance().deleteFile();
-                    },
-                    child: Text('delete  file')),
-                ElevatedButton(
-                    onPressed: () {
-                      _startTimer();
-                    },
-                    child: Text('开始轮询')),
-                ElevatedButton(
-                    onPressed: () {
-                      CrashHandler.getInstance().stopTimer();
-                    },
-                    child: Text('停止轮询')),
-                ElevatedButton(
-                    onPressed: () {
-                      // _testQueue();
+                    await CrashHandler.getInstance().write2Local(content);
+                    print(
+                        "--------------- write ---------------- time >>> ${DateTime.now()}");
+                  },
+                  child: Text('write to file')),
+              ElevatedButton(
+                  onPressed: () {
+                    // _readFile();
+                    // CrashHandler.getInstance().boostReporter();
+                    CrashHandler.getInstance().readFile();
+                  },
+                  child: Text('read from file')),
+              ElevatedButton(
+                  onPressed: () {
+                    // _deleteFile();
+                    CrashHandler.getInstance().deleteFile();
+                  },
+                  child: Text('delete  file')),
+              ElevatedButton(
+                  onPressed: () {
+                    _startTimer();
+                  },
+                  child: Text('开始轮询')),
+              ElevatedButton(
+                  onPressed: () {
+                    CrashHandler.getInstance().stopTimer();
+                  },
+                  child: Text('停止轮询')),
+              ElevatedButton(
+                  onPressed: () {
+                    // _testQueue();
 
-                      // var numberPrinter = () {
-                      //   int num = 0;
-                      //   print("num = $num");
-                      //   return () {
-                      //     for (int i = 0; i < 10; i++) {
-                      //       num++;
-                      //     }
-                      //     print(num);
-                      //   };
-                      // };
-                      //
-                      // var printer = numberPrinter();
-                      // ee();
-                      //
-                      // testJson();
+                    // var numberPrinter = () {
+                    //   int num = 0;
+                    //   print("num = $num");
+                    //   return () {
+                    //     for (int i = 0; i < 10; i++) {
+                    //       num++;
+                    //     }
+                    //     print(num);
+                    //   };
+                    // };
+                    //
+                    // var printer = numberPrinter();
+                    // ee();
+                    //
+                    // testJson();
+                    // add();
 
-                      add();
-                    },
-                    child: Text('测试集合')),
-                ElevatedButton(
-                    onPressed: () {
-                      count++;
-                      // if (count % 2 == 0) {
-                      //   String? txt = null;
-                      //   int len = txt!.length;
-                      // } else {
-                      //   List list = [1];
-                      //   int b = list[2];
-                      // }
-                      // print("-----");
-                      // testAsync();
-                      // print("xxxxxxxx");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return TestJsonWidget();
+                      }),
+                    );
+                  },
+                  child: Text('跳转json序列化页面')),
+              ElevatedButton(
+                  onPressed: () async {
+                    count++;
+                    print(
+                        "--------------------------count = $count-------------------------");
+                    //
+                    // if (count % 2 == 0) {
+                    //   String? txt = null;
+                    //   int len = txt!.length;
+                    // } else {
+                    //   List list = [1];
+                    //   int b = list[2];
+                    // }
 
-                      clear();
-                    },
-                    child: Text('测试crash')),
-              ],
-            ),
+                    List<int> ll = [1, 2, 3, 4];
+
+                    // for (int a in ll ) {
+                    //   if (a == 2) {
+                    //     ll.remove(2); // 这样会报 Concurrent modification
+                    //   }
+                    // }
+
+                    ll.removeWhere((element) => element == 2);
+
+                    print("ll == $ll");
+
+                    String phone = "188175";
+                    if (phone.length >= 7) {
+                      phone = phone.replaceRange(3, 7, "****");
+                    } else {
+                      phone = phone.replaceRange(3, phone.length, "****");
+                    }
+
+                    print("------------ phone = $phone");
+
+                    // print("-----");
+                    // testAsync();
+                    // print("xxxxxxxx");
+
+                    // await testAsync2();
+                    // await testAsync2();
+                    // futureQueueTest();
+
+                    // await testAsync3();
+                    // await testAsync3();
+
+                    // clear();
+                  },
+                  child: Text('测试crash')),
+            ],
           ),
         ),
       ),
     );
-  }
-}
-
-/// json convert 嵌套类的解析
-class Student {
-  String name;
-  int age;
-  Grade grade;
-  List<Address> addressList;
-
-  Student(
-      {required this.name,
-      required this.age,
-      required this.grade,
-      required this.addressList});
-
-  factory Student.fromJson(Map<String, dynamic> parsedJson) {
-    /// addressList 是列表 和 grade 的处理方式不一样
-    /// 方式 1
-    List<Address> addressL = [];
-    var list = parsedJson['addressList'];
-    for (var address in list) {
-      addressL.add(Address.fromJson(address));
-    }
-
-    /// 方式 2，显然方式2的更加优雅
-    List<Address> addressL2 = (parsedJson['addressList'] as List<dynamic>)
-        .map((e) => Address.fromJson(e))
-        .toList();
-
-    return Student(
-      name: parsedJson['name'],
-      age: parsedJson['age'],
-      grade: Grade.fromJson(parsedJson['grade']),
-      addressList: addressL2,
-    );
-  }
-
-  Map toJson() {
-    Map map = Map();
-    map["name"] = this.name;
-    map["age"] = this.age;
-    map["grade"] = this.grade;
-    map['addressList'] = this.addressList;
-    return map;
-  }
-}
-
-class Grade {
-  String className;
-  String title;
-
-  Grade({required this.className, required this.title});
-
-  factory Grade.fromJson(Map<String, dynamic> parsedJson) {
-    return Grade(
-      className: parsedJson['className'],
-      title: parsedJson['title'],
-    );
-  }
-
-  Map toJson() {
-    Map map = Map();
-    map["className"] = this.className;
-    map["title"] = this.title;
-    return map;
-  }
-}
-
-class Address {
-  String street;
-  String district;
-
-  Address({required this.street, required this.district});
-
-  factory Address.fromJson(Map<String, dynamic> parsedJson) {
-    return Address(
-      street: parsedJson['street'],
-      district: parsedJson['district'],
-    );
-  }
-
-  Map toJson() {
-    Map map = Map();
-    map["street"] = this.street;
-    map["district"] = this.district;
-    return map;
   }
 }

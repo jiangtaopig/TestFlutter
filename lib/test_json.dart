@@ -7,7 +7,7 @@ void main() {
 }
 
 class TestJsonWidget extends StatefulWidget {
-  // const TestJsonWidget(Key? key) : super(key: key);
+  const TestJsonWidget({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -16,8 +16,6 @@ class TestJsonWidget extends StatefulWidget {
 }
 
 class _TestJsonWidgetState extends State<TestJsonWidget> {
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +29,8 @@ class _TestJsonWidgetState extends State<TestJsonWidget> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-
+                      var list = [1];
+                      int d = list[3];
                     },
                     child: Text("对象转json")),
                 ElevatedButton(
@@ -58,7 +57,6 @@ class _TestJsonWidgetState extends State<TestJsonWidget> {
                       Student student2 = Student.fromJson(s1);
                       print(
                           "class is ${student2.grade.className}, address1 = ${student2.addressList[0].district}");
-
                     },
                     child: Text("json 转对象")),
               ],

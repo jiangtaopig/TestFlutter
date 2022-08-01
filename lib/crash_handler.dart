@@ -10,16 +10,16 @@ import 'model/crash_model.dart';
 
 class CrashHandler {
   final String TAG = "CrashHandler";
-  final int MAX_SIZE = 3;
-  static const int LOOP_TIME_SECOND = 5 * 60;
+  final int MAX_SIZE = 2; /// 异常次数阈值，达到这个值就上报服务侧
+  static const int LOOP_TIME_SECOND = 1 * 60; /// 10分钟轮询1次
   static const int COUNT_TYPE = 1;
   static const int LOOP_TYPE = COUNT_TYPE + 1;
   static const int BOOSTER_TYPE = LOOP_TYPE + 1;
 
   Timer? timer;
   List<CrashBean> _crashBeanList = [];
-  static CrashHandler? _instance;
 
+  static CrashHandler? _instance;
   CrashHandler._internal();
 
   static CrashHandler getInstance() {
@@ -34,7 +34,7 @@ class CrashHandler {
     int time = 0;
     timer = Timer.periodic(Duration(seconds: LOOP_TIME_SECOND), (t) async {
       time++;
-      print(time);
+      print("time = $time , ${DateTime.now()}");
       if (!_crashBeanList.isEmpty) {
         print("startTimer _crashBeanList size = ${_crashBeanList.length}");
         List<CrashBean> tmpList = List.from(_crashBeanList);
@@ -66,6 +66,8 @@ class CrashHandler {
 
         /// 接口上报
         reporterToService(COUNT_TYPE);
+        print("$TAG : addCrashData  time = ${DateTime.now()}");
+        stopTimer();
         for (CrashBean bean in tmpList) {
           /// tmpList.clear();
         }
@@ -147,6 +149,7 @@ class CrashHandler {
 
   /// app 启动的时候，如果发现 crash.txt 文件不为空，则上报，然后删除 crash.txt
   void boostReporter() async {
+    print("$TAG: boostReporter start");
     try {
       String content = await readFile();
       List<CrashBean> crashList = parseList(content);
@@ -154,7 +157,9 @@ class CrashHandler {
       print("$TAG: boostReporter crashList size = $size");
 
       /// TODO 接口上报
-      reporterToService(BOOSTER_TYPE);
+      if (size > 0) {
+        reporterToService(BOOSTER_TYPE);
+      }
     } catch(e, s) {
      print("$TAG: boostReporter error; $e,  ${s.toString()}");
     }
@@ -178,6 +183,7 @@ class CrashHandler {
   }
 
   Future reporterToService(int type) async {
+    print("reporterToService  开始上报");
     String msg = "";
     switch (type) {
       case COUNT_TYPE:
@@ -190,6 +196,7 @@ class CrashHandler {
         msg = "首次启动上报";
         break;
     }
+    print(" reporterToService >>>>>> $msg");
     Fluttertoast.showToast(
         msg: msg,
         gravity: ToastGravity.CENTER,

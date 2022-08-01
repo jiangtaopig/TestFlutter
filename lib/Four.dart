@@ -99,8 +99,16 @@ class _FourAppPageState extends State<FourAppPage> {
     //     fontSize: 16);
   }
 
-  final TextEditingController _controller = new TextEditingController();
+  final TextEditingController _controller =
+      TextEditingController(text: "我是 TextField 设置的值");
   FocusNode _commentFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.selection = TextSelection.fromPosition(
+        TextPosition(affinity: TextAffinity.downstream, offset: 3));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +137,7 @@ class _FourAppPageState extends State<FourAppPage> {
           children: [
             Container(
               color: Colors.indigo,
-              width: 250,
+              width: 212,
               padding: EdgeInsets.all(8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -269,7 +277,15 @@ class _FourAppPageState extends State<FourAppPage> {
                   TextField(
                     controller: _controller,
                     focusNode: _commentFocus,
-                    decoration: new InputDecoration(hintText: 'input sth'),
+                    decoration: new InputDecoration(
+                      hintText: 'input sth',
+                    ),
+                    inputFormatters: <TextInputFormatter>[
+                      LengthLimitingTextInputFormatter(6) //限制长度
+                    ],
+                    onChanged: (text) {
+                      print("onChanged text = $text");
+                    },
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -340,7 +356,6 @@ class _FourAppPageState extends State<FourAppPage> {
                       child: Text('函数Function使用')),
                   InkWell(
                     splashColor: Colors.red,
-
                     highlightColor: Colors.greenAccent,
                     onTap: () {
                       print('-----------水波纹效果点击----------');
@@ -359,7 +374,7 @@ class _FourAppPageState extends State<FourAppPage> {
               padding: EdgeInsets.all(2),
               child: Image.asset(
                 'images/zz.png',
-                width: 106,
+                width: 86,
                 height: 216,
                 fit: BoxFit.fill,
                 alignment: Alignment.topLeft,

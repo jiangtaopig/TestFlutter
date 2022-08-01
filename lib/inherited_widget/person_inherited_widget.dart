@@ -12,15 +12,18 @@ class PersonInheritedWidget extends InheritedWidget {
 
   PersonInheritedWidget({Key? key, required this.person, required this.updateCallback, required Widget child}) : super(key: key, child: child);
 
-  /// 定义一个便捷方法，获取对象，方便子树中的widget获取共享数据
+  /// 定义一个静态方法获取对象，方便子树中的 widget 获取共享数据
   static PersonInheritedWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<PersonInheritedWidget>();
   }
 
+  void updatePerson(Person person) {
+    updateCallback(person);
+  }
 
   @override
   bool updateShouldNotify(covariant PersonInheritedWidget oldWidget) {
-    return person != oldWidget;
+    return person != oldWidget.person;
   }
 
 }
