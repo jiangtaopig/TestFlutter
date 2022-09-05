@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_demo/AppConstants.dart';
@@ -290,14 +291,45 @@ class _FourAppPageState extends State<FourAppPage> {
                   ElevatedButton(
                       onPressed: () {
                         _commentFocus.unfocus(); // 输入框失去焦点
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return AlertDialog(
+                        //         title: Text('what you input'),
+                        //         content: Text(_controller.text),
+                        //         actions: [Text('取消'), Text('确定')],
+                        //       );
+                        //     });
+
                         showDialog(
                             context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('what you input'),
-                                content: Text(_controller.text),
-                              );
-                            });
+                            builder: (context) => CupertinoAlertDialog(
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: [
+                                        Text("是否将联系人信息同步为客户信息"),
+                                        TextField(
+                                            decoration: new InputDecoration(
+                                          hintText: '输入标题',
+                                        ))
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    CupertinoDialogAction(
+                                      child: const Text("确定"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      child: const Text("取消"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ));
                       },
                       child: Text('Show dialog')),
                   ElevatedButton(

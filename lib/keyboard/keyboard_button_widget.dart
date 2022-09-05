@@ -38,14 +38,14 @@ class KeyboardButtonWidget extends StatelessWidget {
           builder: (BuildContext context, bool value, Widget? child) {
             return Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.all(0.8), /// 如果不加 margin ,那么下面设置的 boxShadow 会有部分被裁减
+              margin: EdgeInsets.all(1.5), /// 如果不加 margin ,那么下面设置的 boxShadow 会有部分被裁减
               height: 41.5,
               decoration: BoxDecoration(
                   color: value ? Color(0xff2A9DFF) : Color(0xffFFFFFF),
                   borderRadius: const BorderRadius.all(Radius.circular(4)),
                   // border: Border.all(color: Color(0xff333333), width: 0.2),
                   boxShadow: [
-                    BoxShadow(color: Color(0xff333333), blurRadius: 0.2)
+                    BoxShadow(color: Color(0xff333333), blurRadius: 0.2, offset: Offset(1.1, 1.1))
                   ],
               ),
               child: _buildInsideBox(value),

@@ -20,7 +20,8 @@ class CrashHandler {
   List<CrashBean> _crashBeanList = [];
 
   static CrashHandler? _instance;
-  CrashHandler._internal();
+
+  CrashHandler._internal(); /// 私有的构造函数
 
   static CrashHandler getInstance() {
     if (_instance == null) {

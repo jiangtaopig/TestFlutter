@@ -3,30 +3,13 @@ import 'package:flutter_demo/getx/person_model.dart';
 import 'package:get/get.dart';
 import 'package:get/get_instance/src/bindings_interface.dart';
 
-class TestGetXBinding extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _TestGetXBindingState();
-  }
-}
-
-class _TestGetXBindingState extends State<TestGetXBinding> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("GetXBinding ... "),
-      ),
-    );
-  }
-}
-
 class XPageOne extends StatelessWidget {
   const XPageOne({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final CounterController counterController = Get.find<CounterController>();
+    print("---------------------- XPageOne build -----------------------counterController = ${counterController.hashCode}");
 
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +26,7 @@ class XPageOne extends StatelessWidget {
             /// 当数据源变化时，需要手动执行刷新组件的方法，即 CounterController 中的 increase() 方法中需要调用 update() 方法；
             /// 此状态管理器内部实际上是对 StatefulWidget 的封装，占用资源极少！
             GetBuilder<CounterController>(builder: (controller) {
+              print("---------------------- GetBuilder build -----------------------");
               return Text("点击次数 ${controller.count}", );
             }),
 
@@ -75,6 +59,7 @@ class XPageTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PersonController personController = Get.find<PersonController>();
+    final CounterController counterController = Get.find<CounterController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +80,13 @@ class XPageTwo extends StatelessWidget {
                   var person = Person(name: "刘诗诗", age: 34);
                   personController.changePerson(person);
                 },
-                child: Text("change person"))
+                child: Text("change person")),
+
+            ElevatedButton(
+                onPressed: () {
+                  counterController.increase();
+                },
+                child: Text("add "))
           ],
         ),
       ),

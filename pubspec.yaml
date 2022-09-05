@@ -57,6 +57,17 @@ dependencies:
 # 状态管理
   get: 4.6.1
 
+  # 可缓存的网络图片
+  cached_network_image: ^3.2.0
+
+  # bloc 状态管理
+  flutter_bloc: ^8.0.1
+
+  # 时间选择器
+  flutter_cupertino_datetime_picker: ^3.0.0
+  # 日期格式化
+  intl: 0.17.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
