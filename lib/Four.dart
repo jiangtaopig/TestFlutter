@@ -235,29 +235,32 @@ class _FourAppPageState extends State<FourAppPage> {
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: Text(
-                      'jump2SecondActivity',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      // Text 加省略号
-                      'you need study hard !!! you need study hard',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    onTap: () {
-                      // Fluttertoast.showToast(
-                      //     msg: 'click me',
-                      //     gravity: ToastGravity.CENTER,
-                      //     timeInSecForIosWeb: 3,
-                      //     backgroundColor: Colors.red,
-                      //     textColor: Colors.black,
-                      //     fontSize: 16);
+                  Container(
+                    color: Colors.red,
+                    child: ListTile(
+                      title: Text(
+                        'jump2SecondActivity',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        // Text 加省略号
+                        'you need study hard !!! you need study hard',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      onTap: () {
+                        // Fluttertoast.showToast(
+                        //     msg: 'click me',
+                        //     gravity: ToastGravity.CENTER,
+                        //     timeInSecForIosWeb: 3,
+                        //     backgroundColor: Colors.red,
+                        //     textColor: Colors.black,
+                        //     fontSize: 16);
 
-                      print('--------------------------------');
-                      _jump2NativeSecondActivity();
-                    },
+                        print('--------------------------------');
+                        _jump2NativeSecondActivity();
+                      },
+                    ),
                   ),
                   ElevatedButton(
                       onPressed: () {

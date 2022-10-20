@@ -1,21 +1,9 @@
-name: flutter_demo
-description: A new Flutter project.
+name: first_plugin_example
+description: Demonstrates how to use the first_plugin plugin.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -30,45 +18,17 @@ dependencies:
   flutter:
     sdk: flutter
 
+  first_plugin:
+    # When depending on this package from a real application you should use:
+    #   first_plugin: ^x.y.z
+    # See https://dart.dev/tools/pub/dependencies#version-constraints
+    # The example app is bundled with the plugin so we use a path dependency on
+    # the parent directory to use the current plugin's version.
+    path: ../
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-
-    # json_serializable 需要依赖的注解 https://github.com/google/json_serializable.dart/tree/master/example
-  json_annotation: ^4.4.0
-
-  http: ^0.13.4
-  dio: ^4.0.0
-  provider: ^6.0.3
-# webview
-  webview_flutter: ^3.0.4
-# 文件操作
-  path_provider: ^2.0.11
-  fluttertoast: ^8.0.9
-  flutter_bugly: ^0.4.4
-  video_player: ^2.2.7
-
-# 多图片选择器
-  multi_image_picker2: ^5.0.2
-#  图片压缩
-  flutter_image_compress: ^1.1.0
-
-# 状态管理
-  get: 4.6.1
-
-  # 可缓存的网络图片
-  cached_network_image: ^3.2.0
-
-  # bloc 状态管理
-  flutter_bloc: ^8.0.1
-
-  # 时间选择器
-  flutter_cupertino_datetime_picker: ^3.0.0
-  # 日期格式化
-  intl: 0.17.0
-  first_plugin:
-    path: ./zjt_plugins/first_plugin
 
 dev_dependencies:
   flutter_test:
@@ -81,11 +41,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
-  # json 序列化辅助类 https://pub.flutter-io.cn/packages/json_serializable/install
-  # https://github.com/google/json_serializable.dart/tree/master/example
-  json_serializable: ^6.2.0
-  build_runner: ^2.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -96,10 +51,6 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  assets:
-    - assets/Test.json
-    - assets/my.html
-    - images/zz.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -131,5 +82,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-

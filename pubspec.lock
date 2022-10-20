@@ -225,6 +225,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.1.2"
+  first_plugin:
+    dependency: "direct main"
+    description:
+      path: "zjt_plugins/first_plugin"
+      relative: true
+    source: path
+    version: "0.0.1"
   fixnum:
     dependency: transitive
     description:

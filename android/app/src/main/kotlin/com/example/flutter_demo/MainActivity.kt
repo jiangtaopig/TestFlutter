@@ -5,6 +5,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.plugins.flutterplugin.FlutterPlugin
+import com.example.first_plugin.FirstPlugin
 
 class MainActivity: FlutterActivity() {
 
@@ -14,6 +15,10 @@ class MainActivity: FlutterActivity() {
 //        Toast.makeText(this, "mainactivity ", Toast.LENGTH_LONG).show()
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         FlutterPlugin.registerWith(flutterEngine, this)
+
+
 //        FlutterPlugin.invokeFlutter();
     }
+
+
 }
