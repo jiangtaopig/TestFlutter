@@ -7,6 +7,8 @@ import 'package:flutter_demo/model/crash_model.dart';
 import 'package:flutter_demo/testException.dart';
 import 'package:flutter_demo/test_multi_image_picker.dart';
 
+import 'Four.dart';
+
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
 
@@ -23,7 +25,7 @@ void main() {
 
 
   runZonedGuarded(() {
-     runApp(MaterialApp(home: const TestException(),));
+     runApp(MaterialApp(home: TestMultiImagePicker(),));
     // FlutterBugly.postCatchedException(() {
     //   // 如果需要 ensureInitialized，请在这里运行。
     //   // WidgetsFlutterBinding.ensureInitialized();

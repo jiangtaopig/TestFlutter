@@ -1,8 +1,8 @@
+import 'package:first_plugin/first_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_demo/AppConstants.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(FourApp());
@@ -25,6 +25,7 @@ class FourAppPage extends StatefulWidget {
 }
 
 /// 箭头表达式：如果函数体内只有一个表达式，那么就可以使用箭头函数来简化代码
+///  箭头函数内只能写一条语句，并且语句后面没有分号(;)
 Function test = (a) => a * a;
 
 /// 高阶函数
@@ -43,8 +44,13 @@ int f1() {
 }
 
 class _FourAppPageState extends State<FourAppPage> {
+
+  final _firstPlugin = FirstPlugin();
+  final methodChannelFirstPlugin = const MethodChannel('first_plugin');
+
   MethodChannel methodChannel =
       new MethodChannel('com.example.flutter_demo/jump_plugin');
+
 
   void _jump2NativeSecondActivity() async {
     String result = await methodChannel.invokeMethod('jump2SecondActivity');
@@ -52,6 +58,12 @@ class _FourAppPageState extends State<FourAppPage> {
     int v = test(3);
     print(v);
     add(4, test);
+  }
+
+  void getAndroidSystemVersion() async {
+    print("---------getAndroidSystemVersion------------");
+    String? version = await methodChannelFirstPlugin.invokeMethod('getPlatformVersion');
+    print(version);
   }
 
   void _sendDataToNative() async {
@@ -114,6 +126,7 @@ class _FourAppPageState extends State<FourAppPage> {
   @override
   Widget build(BuildContext context) {
     print('-----------------=======----------------');
+
     methodChannel.setMethodCallHandler((handler) => Future<String>(() {
           print("Native端要调用的方法和参数是：${handler}");
           // 监听native发送的方法名及参数
@@ -122,9 +135,25 @@ class _FourAppPageState extends State<FourAppPage> {
               _send(handler.method,
                   handler.arguments); //handler.arguments表示native传递的方法参数
               break;
+            case "AndroidInvokeFlutter2": // Native要求Flutter调用的方法是_send（）
+              _send(handler.method,
+                  handler.arguments); //handler.arguments表示native传递的方法参数
+              break;
           }
-          return "Flutter 的确认消息";
+          return "Flutter 返回的的确认消息";
         }));
+
+    // FirstPlugin 插件接收 native 的调用
+    methodChannelFirstPlugin.setMethodCallHandler((handler) => Future<String>(() {
+      print("Native端要调用的方法和参数是：${handler}");
+      // 监听native发送的方法名及参数
+      switch (handler.method) {
+        case "AndroidInvokeFlutter2": // Native要求Flutter调用的方法是_send（）
+          _send(handler.method, handler.arguments); //handler.arguments表示native传递的方法参数
+          break;
+      }
+      return "Flutter 返回的的确认消息";
+    }));
 
     return Scaffold(
       appBar: AppBar(
@@ -174,10 +203,7 @@ class _FourAppPageState extends State<FourAppPage> {
                               Icons.star,
                               color: Colors.red[500],
                             ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.red[500],
-                            ),
+
                           ],
                         ),
                         Text(
@@ -262,6 +288,11 @@ class _FourAppPageState extends State<FourAppPage> {
                       },
                     ),
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        getAndroidSystemVersion();
+                      },
+                      child: Text('flutter 获取Android系统版本')),
                   ElevatedButton(
                       onPressed: () {
                         _sendDataToNative();
@@ -409,7 +440,7 @@ class _FourAppPageState extends State<FourAppPage> {
               padding: EdgeInsets.all(2),
               child: Image.asset(
                 'images/zz.png',
-                width: 86,
+                width: 70,
                 height: 216,
                 fit: BoxFit.fill,
                 alignment: Alignment.topLeft,
@@ -456,6 +487,8 @@ Future<String> getResponse() async {
   print('data >>> $data');
   return data;
 }
+
+// int sum3(int x, int y) => {x+y};
 
 class MyHomePage extends StatelessWidget {
   @override

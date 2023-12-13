@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
@@ -36,7 +35,7 @@ class Web extends StatefulWidget {
 }
 
 class _WebState extends State<Web> {
-  String _url = "assets/my.html";
+  String _url = "assets/my_local.html";
   WebViewController? _controller;
 
   _loadHtmlFromAssets() async {
@@ -61,7 +60,7 @@ class _WebState extends State<Web> {
                   .runJavascriptReturningResult(
                       "flutterCallJsMethod('Flutter调用了JS，点击确定收到返回值并Toast')")
                   .then((value) {
-                Fluttertoast.showToast(msg: value.toString());
+                // Fluttertoast.showToast(msg: value.toString());
               });
             }
           },
@@ -92,7 +91,6 @@ class _WebState extends State<Web> {
                   var dd = jsonDecode(data);
                   print("dd = $dd, runtimeType = ${dd.runtimeType}");
 
-                  Fluttertoast.showToast(msg: dd['name']);
                 }),
             JavascriptChannel(
                 name: "jscomm",
@@ -102,7 +100,7 @@ class _WebState extends State<Web> {
                   dynamic result = json.decode(message.message);
                   String event = result["event"];
                   String data = result["data"];
-                  Fluttertoast.showToast(msg: message.message.toString());
+                  print("webview_js_interactive >>> event ");
                 }),
           },
           onWebViewCreated: (controller) {

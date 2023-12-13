@@ -24,15 +24,29 @@ class PortraitPage extends StatefulWidget {
 
 class _PortraitPageState extends State<PortraitPage> {
   VideoPlayerController? controller;
+  
+  bool showPlayIcon = true;
+  
+  _changePlayIconVisibility() {
+    setState(() {
+      
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    // controller = VideoPlayerController.network(
+    //     "https://cdn-resource.ekwing.com/acpf/data/upload/expand/2017/08/29/59a53da773e00.mp4")
+    //   ..setLooping(true)
+    //   ..initialize().then((_) {
+    //     controller!.play();
+    //   });
     controller = VideoPlayerController.network(
-        "https://cdn-resource.ekwing.com/acpf/data/upload/expand/2017/08/29/59a53da773e00.mp4")
-      ..setLooping(true)
+        'http://tanzi27niu.cdsb.mobi/wps/wp-content/uploads/2017/05/2017-05-17_17-33-30.mp4')
       ..initialize().then((_) {
-        controller!.play();
+        // 确保在初始化视频后显示第一帧，直至在按下播放按钮。
+        setState(() {});
       });
   }
 
@@ -48,16 +62,36 @@ class _PortraitPageState extends State<PortraitPage> {
       home: Scaffold(
         body: Column(
           children: [
-            AspectRatio(
-              aspectRatio: controller!.value.aspectRatio,
-              child: VideoPlayer(controller!),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  color: Colors.cyan,
+                  padding: EdgeInsets.all(10),
+                  child: AspectRatio(
+                    aspectRatio: controller!.value.aspectRatio,
+                    child: VideoPlayer(controller!),
+                  ),
+                ),
+                showPlayIcon ? IconButton(
+                  icon: Icon(Icons.play_circle_fill_rounded),
+                  iconSize: 60,
+                  color: Colors.green,
+                  onPressed: () {
+                    controller!.value.isPlaying ? controller!.pause() : controller!.play();
+                    showPlayIcon = false;
+                    _changePlayIconVisibility();
+                  },
+                ) : Icon(Icons.pause_circle_filled_rounded,),
+              ],
             ),
             MaterialButton(
                 onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>
-                          VideoFullPage(controller: controller!)));
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              VideoFullPage(controller: controller!)));
                 },
                 child: Text("切换全屏"))
           ],
@@ -77,7 +111,6 @@ class VideoFullPage extends StatefulWidget {
 }
 
 class _VideoFullPageState extends State<VideoFullPage> {
-
   @override
   void initState() {
     super.initState();

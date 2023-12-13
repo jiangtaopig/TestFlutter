@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'model/crash_model.dart';
@@ -87,9 +86,9 @@ class CrashHandler {
   Future<File> get _localFile async {
     final path = await _localPath;
     Directory directory = Directory("$path/crash/");
-    if (!directory.existsSync()) {
-      directory.createSync(recursive: true);
-    }
+    // if (!directory.existsSync()) {
+    //   directory.createSync(recursive: true);
+    // }
     return File('${directory.path}/crash.txt');
   }
 
@@ -198,14 +197,6 @@ class CrashHandler {
         break;
     }
     print(" reporterToService >>>>>> $msg");
-    Fluttertoast.showToast(
-        msg: msg,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.black,
-        fontSize: 16);
-
     /// 删除本地 crash.txt
     _deleteFile();
   }

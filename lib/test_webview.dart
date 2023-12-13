@@ -96,7 +96,7 @@ class _WebViewExampleState extends State<WebViewExample> {
         ],
       ),
       body: WebView(
-        initialUrl: 'https://flutter.dev',
+        initialUrl: 'http://10.118.14.48:9890/#/',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
@@ -429,7 +429,7 @@ class SampleMenu extends StatelessWidget {
     final File indexFile = File(
         <String>{tmpDir, 'www', 'index.html'}.join(Platform.pathSeparator));
 
-    await indexFile.create(recursive: true);
+    // await indexFile.create(recursive: true);
     await indexFile.writeAsString(kLocalExamplePage);
 
     return indexFile.path;

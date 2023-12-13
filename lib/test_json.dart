@@ -30,7 +30,7 @@ class _TestJsonWidgetState extends State<TestJsonWidget> {
                 ElevatedButton(
                     onPressed: () {
                       var list = [1];
-                      int d = list[3];
+                      // int d = list[3];
                     },
                     child: Text("对象转json")),
                 ElevatedButton(
@@ -57,7 +57,25 @@ class _TestJsonWidgetState extends State<TestJsonWidget> {
                       Student student2 = Student.fromJson(s1);
                       print(
                           "class is ${student2.grade.className}, address1 = ${student2.addressList[0].district}");
+
+                      List<String> img_data = [];
+                      img_data.add("https://cdn.acng");
+                      img_data.add("https://cdn.acwing2a8b40c.jpg");
+
+                      TestMO testMo = TestMO(id: 1, content: "hhh", img_data: img_data);
+                      String testMoJson = jsonEncode(testMo);
+                      print("---------------------------------------");
+                      print("testMoJson = $testMoJson");
+
+                      var t1 = jsonDecode(testMoJson);
+                      print("$t1, runType = ${t1.runtimeType}");
+
+                      TestMO testMo2 = TestMO.fromJson(t1);
+                      print("testMo2 = $testMo2" + ", img_data = ${testMo2.img_data}");
+
+
                     },
+
                     child: Text("json 转对象")),
               ],
             ),
@@ -65,6 +83,37 @@ class _TestJsonWidgetState extends State<TestJsonWidget> {
         ),
       ),
     );
+  }
+}
+
+class TestMO {
+  int id;
+  String content;
+  List<String> img_data;
+
+  TestMO({required this.id, required this.content, required this.img_data});
+
+  factory TestMO.fromJson(Map<String, dynamic> parsedJson) {
+
+    List<String> imgs = [];
+    var list = parsedJson['img_data'];
+    print("list = $list, runtimeType = ${list.runtimeType}");
+    for (var img in list) {
+      imgs.add(img);
+    }
+
+    return TestMO(
+        id: parsedJson['id'],
+        content: parsedJson['content'],
+        img_data: imgs);
+  }
+
+  Map toJson() {
+    Map map = Map();
+    map["id"] = this.id;
+    map["content"] = this.content;
+    map["img_data"] = this.img_data;
+    return map;
   }
 }
 

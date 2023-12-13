@@ -2,8 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_demo/util/ImageWaterMarkUtils.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
+import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 class TestMultiImagePicker extends StatefulWidget {
 
@@ -16,10 +19,16 @@ class TestMultiImagePicker extends StatefulWidget {
 }
 
 class _TestMultiImagePickerState extends State<TestMultiImagePicker> {
+
+  MethodChannel methodChannel =
+  new MethodChannel('com.example.flutter_demo/jump_plugin');
+
+  MethodChannel imgExtInfoChannel = new MethodChannel('img_ext');
+
   List<Asset> images = <Asset>[];
   Uint8List? uint8list = null;
   List<Uint8List> imageBytes = <Uint8List>[];
-  List<String?> _imgPathList = [];
+  List<File?> _imgPathList = [];
 
   List<Widget> _buildWidget() {
     // List<Widget> widgets = imageBytes.map((e) => _buildImageView(e)).toList();
@@ -48,13 +57,13 @@ class _TestMultiImagePickerState extends State<TestMultiImagePicker> {
     );
   }
 
-  Widget _buildImageViewWithPath(String path) {
+  Widget _buildImageViewWithPath(File filePath) {
     return Container(
       alignment: Alignment.center,
-      width: 100,
-      height: 30,
+      width: 500,
+      height: 500,
       color: Colors.greenAccent,
-      child: Image.file(File(path)),
+      child: Image.file(filePath),
     );
   }
 
@@ -93,14 +102,32 @@ class _TestMultiImagePickerState extends State<TestMultiImagePicker> {
     //   }
     // }
 
-    List<String?> _imgLocalPathList = [];
+    void _sendDataToNative(String path, String uri) async {
+      print('flutter 开始向 Native 传递数据');
+      Map<String, String> map = {
+        "flutter": "我是flutter传递的参数",
+        "path" : path,
+        "uriStr" : uri
+      };
+      String result = await imgExtInfoChannel.invokeMethod('getImgInfo', map);
+      print(result);
+    }
+
+    List<File?> _imgLocalPathList = [];
     if (resultList.isNotEmpty) {
       for (Asset asset in resultList) {
         if (asset.name != null){
-          _imgLocalPathList.add(asset?.name);
+          String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: asset.identifier!);
+          print("path = " + filePath!);
+          // 获取图片的经纬度
+          _sendDataToNative(filePath, asset.identifier!);
+          File file = await ImageWaterMarkUtils.imageAddWaterMark(filePath!, "我是水印");
+          _imgLocalPathList.add(file);
         }
       }
     }
+
+
 
     setState(() {
       // imageBytes.addAll(_images);
@@ -165,7 +192,7 @@ class _TestMultiImagePickerState extends State<TestMultiImagePicker> {
       ),
       body: Container(
         child: GridView.count(
-          crossAxisCount: 3,
+          crossAxisCount: 1,
           mainAxisSpacing: 20,
           crossAxisSpacing: 20,
           children: _buildWidget(),
